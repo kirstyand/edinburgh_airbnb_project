@@ -1,0 +1,38 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(tidyverse)
+library(fs)
+```
+
+```{r}
+# check files in data folder
+list.files(path = "data/")
+```
+
+```{r}
+# write function to read in csv files, automate name
+
+read_all_cvs_fn <- function(data_path){
+  files <- list.files(path = data_path, pattern = ".csv") # create list of files in given path
+  for(file in files){ # take each of these listed files in turn
+    file_path <- file.path(data_path, file) # create full path of file
+   new_file <- read_csv(file_path) #read csv using new path
+   new_file_name <- str_remove(file, "(\\.)(csv|geojson)") %>%  # name csv by removing file ext
+                   str_replace_all("[-]", "_")
+                             #replace any dashes with underscores
+   assign(new_file_name, new_file, envir = .GlobalEnv) #assing csv name to csv file save to global env.
+  }
+}
+```
+
+
+```{r}
+read_all_cvs_fn("data")
+```
+
+
+
